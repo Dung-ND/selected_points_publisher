@@ -55,10 +55,12 @@ protected:
   ros::NodeHandle node_handle_;
   ros::Publisher rviz_selected_publisher_;
   ros::Subscriber pointcloud_subscriber_;
+  ros::Publisher command_publisher_;
 
   std::string tf_frame_;
   std::string rviz_cloud_topic_;
   std::string subscribed_cloud_topic_;
+  std::string command_topic_;
 
   sensor_msgs::PointCloud2 selected_points_;
 

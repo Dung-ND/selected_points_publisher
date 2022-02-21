@@ -40,6 +40,7 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <QVariant>
 #include <visualization_msgs/Marker.h>
+#include <std_msgs/UInt8.h>
 
 namespace rviz_plugin_selected_points_publisher
 {
@@ -56,8 +57,10 @@ void SelectedPointsPublisher::updateTopic()
 {
   node_handle_.param("frame_id", tf_frame_, std::string("/base_link"));
   rviz_cloud_topic_ = std::string("/rviz_selected_points");
+  command_topic_ = std::string("/command");
 
   rviz_selected_publisher_ = node_handle_.advertise<sensor_msgs::PointCloud2>(rviz_cloud_topic_.c_str(), 1);
+  command_publisher_ = node_handle_.advertise<std_msgs::UInt8>(command_topic_.c_str(), 1);
   num_selected_points_ = 0;
 }
 
@@ -65,7 +68,8 @@ int SelectedPointsPublisher::processKeyEvent(QKeyEvent* event, rviz::RenderPanel
 {
   if (event->type() == QKeyEvent::KeyPress)
   {
-    if (event->key() == 'c' || event->key() == 'C')
+    std_msgs::UInt8 msg;
+    if (/*event->key() == 'c' || */event->key() == 'C')
     {
       ROS_INFO_STREAM_NAMED("SelectedPointsPublisher::processKeyEvent", "Cleaning previous selection (selected area "
                                                                         "and points).");
@@ -83,12 +87,52 @@ int SelectedPointsPublisher::processKeyEvent(QKeyEvent* event, rviz::RenderPanel
       marker.lifetime = ros::Duration();
       num_selected_points_ = 0;
     }
-    else if (event->key() == 'p' || event->key() == 'P')
+    else if (/*event->key() == 'p' || */event->key() == 'P')
     {
       ROS_INFO_STREAM_NAMED("SelectedPointsPublisher.updateTopic",
                             "Publishing " << num_selected_points_ << " selected points to topic "
                                           << node_handle_.resolveName(rviz_cloud_topic_));
       rviz_selected_publisher_.publish(selected_points_);
+    }
+    else if(event->key() == 'A')
+    {
+      msg.data = 1;
+      command_publisher_.publish(msg);
+    }
+    else if(event->key() == 'X')
+    {
+      msg.data = 2;
+      command_publisher_.publish(msg);
+    }
+    else if(event->key() == 'D')
+    {
+      msg.data = 3;
+      command_publisher_.publish(msg);
+    }
+    else if(event->key() == 'W')
+    {
+      msg.data = 4;
+      command_publisher_.publish(msg);
+    }
+    else if(event->key() == 'L')
+    {
+      msg.data = 5;
+      command_publisher_.publish(msg);
+    }
+    else if(event->key() == 'R')
+    {
+      msg.data = 6;
+      command_publisher_.publish(msg);
+    }
+    else if(event->key() == 'O')
+    {
+      msg.data = 7;
+      command_publisher_.publish(msg);
+    }
+    else if(event->key() == 'N')
+    {
+      msg.data = 8;
+      command_publisher_.publish(msg);
     }
   }
 }
